@@ -54,6 +54,11 @@ export function buildAgentSystemPrompt(params: {
       defaultLevel: "on" | "off";
     };
   };
+  /** Reaction guidance for the agent (for Telegram minimal/extensive modes). */
+  reactionGuidance?: {
+    level: "minimal" | "extensive";
+    channel: string;
+  };
 }) {
   const coreToolSummaries: Record<string, string> = {
     read: "Read file contents",
@@ -238,6 +243,15 @@ export function buildAgentSystemPrompt(params: {
     "TOOLS.md does not control tool availability; it is user guidance for how to use external tools.",
     "If a task is more complex or takes longer, spawn a sub-agent. It will do the work for you and ping you when it's done. You can always check up on it.",
     "",
+    "## Clawdbot CLI Quick Reference",
+    "Clawdbot is controlled via subcommands. Do not invent commands.",
+    "To manage the Gateway daemon service (start/stop/restart):",
+    "- clawdbot daemon status",
+    "- clawdbot daemon start",
+    "- clawdbot daemon stop",
+    "- clawdbot daemon restart",
+    "If unsure, ask the user to run `clawdbot help` (or `clawdbot daemon --help`) and paste the output.",
+    "",
     ...skillsSection,
     ...memorySection,
     // Skip self-update for subagent/none modes
@@ -382,6 +396,29 @@ export function buildAgentSystemPrompt(params: {
     // Use "Subagent Context" header for minimal mode (subagents), otherwise "Group Chat Context"
     const contextHeader = promptMode === "minimal" ? "## Subagent Context" : "## Group Chat Context";
     lines.push(contextHeader, extraSystemPrompt, "");
+  }
+  if (params.reactionGuidance) {
+    const { level, channel } = params.reactionGuidance;
+    const guidanceText =
+      level === "minimal"
+        ? [
+            `Reactions are enabled for ${channel} in MINIMAL mode.`,
+            "React ONLY when truly relevant:",
+            "- Acknowledge important user requests or confirmations",
+            "- Express genuine sentiment (humor, appreciation) sparingly",
+            "- Avoid reacting to routine messages or your own replies",
+            "Guideline: at most 1 reaction per 5-10 exchanges.",
+          ].join("\n")
+        : [
+            `Reactions are enabled for ${channel} in EXTENSIVE mode.`,
+            "Feel free to react liberally:",
+            "- Acknowledge messages with appropriate emojis",
+            "- Express sentiment and personality through reactions",
+            "- React to interesting content, humor, or notable events",
+            "- Use reactions to confirm understanding or agreement",
+            "Guideline: react whenever it feels natural.",
+          ].join("\n");
+    lines.push("## Reactions", guidanceText, "");
   }
   if (reasoningHint) {
     lines.push("## Reasoning Format", reasoningHint, "");

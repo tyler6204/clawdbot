@@ -16,6 +16,10 @@ export function buildEmbeddedSystemPrompt(params: {
   skillsPrompt?: string;
   /** Controls which hardcoded sections to include. Defaults to "full". */
   promptMode?: PromptMode;
+  reactionGuidance?: {
+    level: "minimal" | "extensive";
+    channel: string;
+  };
   runtimeInfo: {
     host: string;
     os: string;
@@ -44,6 +48,7 @@ export function buildEmbeddedSystemPrompt(params: {
     heartbeatPrompt: params.heartbeatPrompt,
     skillsPrompt: params.skillsPrompt,
     promptMode: params.promptMode,
+    reactionGuidance: params.reactionGuidance,
     runtimeInfo: params.runtimeInfo,
     sandboxInfo: params.sandboxInfo,
     toolNames: params.tools.map((tool) => tool.name),

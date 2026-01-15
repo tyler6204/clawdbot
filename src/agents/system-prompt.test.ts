@@ -34,6 +34,16 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("<final>...</final>");
   });
 
+  it("includes a CLI quick reference section", () => {
+    const prompt = buildAgentSystemPrompt({
+      workspaceDir: "/tmp/clawd",
+    });
+
+    expect(prompt).toContain("## Clawdbot CLI Quick Reference");
+    expect(prompt).toContain("clawdbot daemon restart");
+    expect(prompt).toContain("Do not invent commands");
+  });
+
   it("lists available tools when provided", () => {
     const prompt = buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
@@ -222,5 +232,18 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("Sub-agents stay sandboxed");
     expect(prompt).toContain("User can toggle with /elevated on|off.");
     expect(prompt).toContain("Current elevated level: on");
+  });
+
+  it("includes reaction guidance when provided", () => {
+    const prompt = buildAgentSystemPrompt({
+      workspaceDir: "/tmp/clawd",
+      reactionGuidance: {
+        level: "minimal",
+        channel: "Telegram",
+      },
+    });
+
+    expect(prompt).toContain("## Reactions");
+    expect(prompt).toContain("Reactions are enabled for Telegram in MINIMAL mode.");
   });
 });
