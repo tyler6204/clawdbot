@@ -164,7 +164,18 @@ export async function saveSessionStore(
   store: Record<string, SessionEntry>,
 ): Promise<void> {
   await withSessionStoreLock(storePath, async () => {
-    await saveSessionStoreUnlocked(storePath, store);
+    // Re-read current state inside lock and merge to prevent race conditions.
+    // Incoming store wins for keys it contains, but preserves keys added by
+    // concurrent writers that aren't in the incoming store.
+    const current = loadSessionStore(storePath);
+    const merged = { ...current, ...store };
+    // Handle explicit deletions: if incoming store has undefined/null values, remove those keys
+    for (const key of Object.keys(store)) {
+      if (store[key] === undefined || store[key] === null) {
+        delete merged[key];
+      }
+    }
+    await saveSessionStoreUnlocked(storePath, merged);
   });
 }
 
@@ -286,3 +297,4 @@ export async function updateLastRoute(params: {
     return next;
   });
 }
+
