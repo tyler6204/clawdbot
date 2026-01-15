@@ -210,6 +210,7 @@ export async function runEmbeddedAttempt(
       skillsPrompt,
       promptMode,
       reactionGuidance,
+      promptMode,
       runtimeInfo,
       sandboxInfo,
       tools,

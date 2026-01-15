@@ -20,6 +20,8 @@ export function buildEmbeddedSystemPrompt(params: {
     level: "minimal" | "extensive";
     channel: string;
   };
+  /** Controls which hardcoded sections to include. Defaults to "full". */
+  promptMode?: PromptMode;
   runtimeInfo: {
     host: string;
     os: string;
@@ -49,6 +51,7 @@ export function buildEmbeddedSystemPrompt(params: {
     skillsPrompt: params.skillsPrompt,
     promptMode: params.promptMode,
     reactionGuidance: params.reactionGuidance,
+    promptMode: params.promptMode,
     runtimeInfo: params.runtimeInfo,
     sandboxInfo: params.sandboxInfo,
     toolNames: params.tools.map((tool) => tool.name),
