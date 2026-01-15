@@ -1,6 +1,7 @@
 import type { ReasoningLevel, ThinkLevel } from "../auto-reply/thinking.js";
 import { SILENT_REPLY_TOKEN } from "../auto-reply/tokens.js";
 import { listDeliverableMessageChannels } from "../utils/message-channel.js";
+import type { ResolvedTimeFormat } from "./date-time.js";
 import type { EmbeddedContextFile } from "./pi-embedded-helpers.js";
 
 /**
@@ -23,7 +24,7 @@ export function buildAgentSystemPrompt(params: {
   modelAliasLines?: string[];
   userTimezone?: string;
   userTime?: string;
-  use24HourTime?: boolean;
+  userTimeFormat?: ResolvedTimeFormat;
   contextFiles?: EmbeddedContextFile[];
   skillsPrompt?: string;
   heartbeatPrompt?: string;
@@ -345,7 +346,9 @@ export function buildAgentSystemPrompt(params: {
           userTime
             ? `${userTime} (${userTimezone ?? "unknown"})`
             : `Time zone: ${userTimezone}. Current time unknown; assume UTC for date/time references.`,
-          `Time format: ${params.use24HourTime ? "24-hour" : "12-hour"}`,
+          params.userTimeFormat
+            ? `Time format: ${params.userTimeFormat === "24" ? "24-hour" : "12-hour"}`
+            : "",
           "",
         ]
       : []),

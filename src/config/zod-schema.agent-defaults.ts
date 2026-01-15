@@ -41,7 +41,7 @@ export const AgentDefaultsSchema = z
     skipBootstrap: z.boolean().optional(),
     bootstrapMaxChars: z.number().int().positive().optional(),
     userTimezone: z.string().optional(),
-    use24HourTime: z.boolean().optional(),
+    timeFormat: z.union([z.literal("auto"), z.literal("12"), z.literal("24")]).optional(),
     contextTokens: z.number().int().positive().optional(),
     cliBackends: z.record(z.string(), CliBackendSchema).optional(),
     memorySearch: MemorySearchSchema,
@@ -121,7 +121,7 @@ export const AgentDefaultsSchema = z
     maxConcurrent: z.number().int().positive().optional(),
     subagents: z
       .object({
-        maxConcurrent: z.number().int().positive().optional().describe("Unlimited by default"),
+        maxConcurrent: z.number().int().positive().optional(),
         archiveAfterMinutes: z.number().int().positive().optional(),
         model: z
           .union([

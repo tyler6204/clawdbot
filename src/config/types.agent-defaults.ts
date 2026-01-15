@@ -103,8 +103,8 @@ export type AgentDefaultsConfig = {
   bootstrapMaxChars?: number;
   /** Optional IANA timezone for the user (used in system prompt; defaults to host timezone). */
   userTimezone?: string;
-  /** Use 24-hour time format in system prompt (default: auto-detect from OS). */
-  use24HourTime?: boolean;
+  /** Time format in system prompt: auto (OS preference), 12-hour, or 24-hour. */
+  timeFormat?: "auto" | "12" | "24";
   /** Optional display-only context window override (used for % in status UIs). */
   contextTokens?: number;
   /** Optional CLI backends for text-only fallback (claude-cli, etc.). */
@@ -179,7 +179,7 @@ export type AgentDefaultsConfig = {
   maxConcurrent?: number;
   /** Sub-agent defaults (spawned via sessions_spawn). */
   subagents?: {
-    /** Max concurrent sub-agent runs (global lane: "subagent"). Unlimited by default. */
+    /** Max concurrent sub-agent runs (global lane: "subagent"). Default: 1. */
     maxConcurrent?: number;
     /** Auto-archive sub-agent sessions after N minutes (default: 60). */
     archiveAfterMinutes?: number;
