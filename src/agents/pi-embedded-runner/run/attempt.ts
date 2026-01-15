@@ -181,7 +181,7 @@ export async function runEmbeddedAttempt(
       config: params.config,
     });
     const isDefaultAgent = sessionAgentId === defaultAgentId;
-    const isSubagent = isSubagentSessionKey(params.sessionKey);
+    const promptMode = isSubagentSessionKey(params.sessionKey) ? "minimal" : "full";
 
     const appendPrompt = buildEmbeddedSystemPrompt({
       workspaceDir: effectiveWorkspace,
@@ -194,7 +194,7 @@ export async function runEmbeddedAttempt(
         ? resolveHeartbeatPrompt(params.config?.agents?.defaults?.heartbeat?.prompt)
         : undefined,
       skillsPrompt,
-      isSubagent,
+      promptMode,
       runtimeInfo,
       sandboxInfo,
       tools,
